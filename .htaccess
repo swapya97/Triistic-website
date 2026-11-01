@@ -1,0 +1,83 @@
+# Triistic Global - Apache configuration
+# Test each block after upload. If the host terminates SSL at a proxy and the
+# HTTPS redirect loops, keep the X-Forwarded-Proto condition and ask the host
+# which header they set.
+
+# ---------- Canonical host: https://triistic.com (no www) ----------
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://triistic.com%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{HTTP_HOST} ^www\.triistic\.com$ [NC]
+RewriteRule ^ https://triistic.com%{REQUEST_URI} [L,R=301]
+
+# /index.html is the same page as / ; send explicit requests to the root
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+</IfModule>
+
+# ---------- Retired pages ----------
+Redirect 301 /Financial_structure.html /advisory-consulting.html
+# Will Writing page removed on 26 Oct 2026 (client request); it was live, so keep this redirect
+Redirect 301 /Will_writing.html /advisory-consulting.html
+
+# Page addresses changed to lowercase with hyphens on 26 Oct 2026 (SEO); [NC] also catches lowercase typing
+<IfModule mod_rewrite.c>
+RewriteRule ^finance_and_accounting\.html$ /finance-accounting-outsourcing.html [R=301,NC,L]
+RewriteRule ^advisory_consulting\.html$ /advisory-consulting.html [R=301,NC,L]
+RewriteRule ^process_outsourcing\.html$ /business-process-outsourcing.html [R=301,NC,L]
+</IfModule>
+
+# Pages merged into the single Finance & Accounting page on 21 Oct 2026 (client request)
+<IfModule mod_rewrite.c>
+RewriteRule ^outsourced-bookkeeping-services\.html$ /finance-accounting-outsourcing.html#bookkeeping [R=301,NE,L]
+RewriteRule ^month-end-close-financial-reporting\.html$ /finance-accounting-outsourcing.html#controller [R=301,NE,L]
+RewriteRule ^ifrs-us-gaap-compliance-support\.html$ /finance-accounting-outsourcing.html#controller [R=301,NE,L]
+RewriteRule ^audit-support-services\.html$ /finance-accounting-outsourcing.html#controller [R=301,NE,L]
+RewriteRule ^fpa-mis-reporting-services\.html$ /finance-accounting-outsourcing.html#fpa [R=301,NE,L]
+RewriteRule ^why-outsource-finance-to-india\.html$ /why-outsource-finance.html [R=301,L]
+</IfModule>
+
+# ---------- Hide dot-folders and dot-files (editor history, tool caches) ----------
+RedirectMatch 404 /\.(?!well-known/)
+
+# ---------- Error page ----------
+ErrorDocument 404 /404.html
+
+# ---------- Types ----------
+AddType image/webp .webp
+AddType image/svg+xml .svg
+AddType application/manifest+json .webmanifest
+
+# ---------- Compression ----------
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---------- Caching ----------
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/svg+xml "access plus 1 year"
+ExpiresByType image/x-icon "access plus 1 year"
+ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+ExpiresByType font/woff2 "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/javascript "access plus 1 month"
+ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# ---------- Security headers ----------
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+# Tell browsers to use https only (added 26 Oct 2026; HTTPS confirmed working on the live host)
+Header always set Strict-Transport-Security "max-age=31536000"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
