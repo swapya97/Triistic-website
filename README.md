@@ -25,3 +25,4 @@ Then open your browser and navigate to `http://localhost:8000`.
 ## License
 
 All rights reserved © Triistic Global.
+
