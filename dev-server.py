@@ -19,7 +19,7 @@ SMTP_HOST = 'smtp.zoho.in'
 SMTP_PORT = 465
 SMTP_USER = 'admin@triistic.com'
 SMTP_PASS = 'hTlq@9je'
-TO_EMAIL  = 'swapnilakulwar97@gmail.com'
+TO_EMAIL  = 'enquiry@triistic.com'
 FROM_NAME = 'Triistic Global Website'
 
 def send_real_email(name, email, company, phone, country, service, message, form_type="Website Inquiry"):
