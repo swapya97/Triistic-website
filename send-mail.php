@@ -26,10 +26,10 @@ define('SMTP_USER', 'admin@triistic.com');
 
 // IMPORTANT: Generate an "App Password" from your Zoho Account:
 // Go to: https://accounts.zoho.com -> Security -> App Passwords -> Generate New Password
-define('SMTP_PASS', 'YOUR_ZOHO_APP_PASSWORD'); 
+define('SMTP_PASS', 'hTlq@9je'); 
 
 // Mail Recipients
-define('TO_EMAIL', 'enquiry@triistic.com');
+define('TO_EMAIL', 'swapnilakulwar97@gmail.com');
 define('FROM_EMAIL', 'admin@triistic.com');
 define('FROM_NAME', 'Triistic Global Website');
 define('REDIRECT_SUCCESS', 'thank-you.html');
