@@ -66,9 +66,12 @@ $form_type   = clean_input($_POST['form_type'] ?? 'Website Inquiry');
 $subject_raw = clean_input($_POST['subject'] ?? 'New Inquiry from Triistic Website');
 $name        = clean_input($_POST['name'] ?? '');
 $email       = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
-$company     = clean_input($_POST['company'] ?? 'Not specified');
-$phone       = clean_input($_POST['phone'] ?? 'Not provided');
-$country     = clean_input($_POST['country'] ?? 'Not specified');
+$company     = clean_input($_POST['company'] ?? '');
+if (empty($company)) $company = 'Not specified';
+$phone       = clean_input($_POST['phone'] ?? '');
+if (empty($phone)) $phone = 'Not provided';
+$country     = clean_input($_POST['country'] ?? '');
+if (empty($country)) $country = 'Not specified';
 $service     = clean_input($_POST['service'] ?? '');
 $message     = clean_input($_POST['message'] ?? '');
 

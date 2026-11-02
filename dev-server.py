@@ -93,9 +93,9 @@ class TriisticRequestHandler(http.server.SimpleHTTPRequestHandler):
             # Extract fields
             name = form_data.get('name', [''])[0]
             email = form_data.get('email', [''])[0]
-            company = form_data.get('company', ['Not specified'])[0]
-            phone = form_data.get('phone', ['Not provided'])[0]
-            country = form_data.get('country', ['Not specified'])[0]
+            company = form_data.get('company', [''])[0] or 'Not specified'
+            phone = form_data.get('phone', [''])[0] or 'Not provided'
+            country = form_data.get('country', [''])[0] or 'Not specified'
             service = form_data.get('service', [''])[0]
             message = form_data.get('message', [''])[0]
             form_type = form_data.get('form_type', ['Website Inquiry'])[0]
