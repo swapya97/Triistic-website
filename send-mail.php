@@ -28,7 +28,7 @@ define('SMTP_USER', 'admin@triistic.com');
 define('SMTP_PASS', 'hTlq@9je'); 
 
 // Mail Recipients
-define('TO_EMAIL', 'swapnilakulwar97@gmail.com');
+define('TO_EMAIL', 'enquiry@triistic.com');
 define('FROM_EMAIL', 'admin@triistic.com');
 define('FROM_NAME', 'Triistic Global Website');
 define('REDIRECT_SUCCESS', 'thank-you.html');
