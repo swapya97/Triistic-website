@@ -129,21 +129,30 @@ $html_body = '<!DOCTYPE html>
         <table>
             <tr><th>Full Name</th><td><strong>' . htmlspecialchars($name) . '</strong></td></tr>
             <tr><th>Email Address</th><td><a href="mailto:' . htmlspecialchars($email) . '">' . htmlspecialchars($email) . '</a></td></tr>
-            <tr><th>Company / Firm</th><td>' . htmlspecialchars($company) . '</td></tr>
-            <tr><th>Phone Number</th><td>' . htmlspecialchars($phone) . '</td></tr>
-            <tr><th>Country</th><td>' . htmlspecialchars($country) . '</td></tr>';
+            <tr><th>Company / Firm</th><td>' . htmlspecialchars($company) . '</td></tr>';
+
+if ($phone !== 'Not provided' && !empty($phone)) {
+    $html_body .= '<tr><th>Phone Number</th><td>' . htmlspecialchars($phone) . '</td></tr>';
+}
+
+if ($country !== 'Not specified' && !empty($country)) {
+    $html_body .= '<tr><th>Country</th><td>' . htmlspecialchars($country) . '</td></tr>';
+}
+
+if (!empty($practice_type)) {
+    $html_body .= '<tr><th>What Best Describes You</th><td><strong>' . htmlspecialchars($practice_type) . '</strong></td></tr>';
+}
+
+if (!empty($trial_needs)) {
+    $html_body .= '<tr><th>Services Needed</th><td>' . htmlspecialchars(implode(', ', $trial_needs)) . '</td></tr>';
+}
+
+if (!empty($call_time)) {
+    $html_body .= '<tr><th>Scoping Call Time</th><td>' . htmlspecialchars($call_time) . '</td></tr>';
+}
 
 if (!empty($service)) {
     $html_body .= '<tr><th>Service Needed</th><td>' . htmlspecialchars($service) . '</td></tr>';
-}
-if (!empty($practice_type)) {
-    $html_body .= '<tr><th>Practice Type</th><td>' . htmlspecialchars($practice_type) . '</td></tr>';
-}
-if (!empty($trial_needs)) {
-    $html_body .= '<tr><th>Required Services</th><td>' . htmlspecialchars(implode(', ', $trial_needs)) . '</td></tr>';
-}
-if (!empty($call_time)) {
-    $html_body .= '<tr><th>Scoping Call Time</th><td>' . htmlspecialchars($call_time) . '</td></tr>';
 }
 
 $html_body .= '

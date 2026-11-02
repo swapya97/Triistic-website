@@ -2,6 +2,7 @@
 Triistic Local Development Server (Multi-threaded with real Zoho SMTP sending)
 Handles multiple concurrent browser connections and tabs (including Incognito).
 Supports static file serving AND dispatches real emails via Zoho SMTP on form submission.
+Adaptive email formatting for both Contact Inquiry and 30-Day Free Trial forms.
 """
 
 import http.server
@@ -22,13 +23,67 @@ SMTP_PASS = 'hTlq@9je'
 TO_EMAIL  = 'enquiry@triistic.com'
 FROM_NAME = 'Triistic Global Website'
 
-def send_real_email(name, email, company, phone, country, service, message, form_type="Website Inquiry"):
+def send_real_email(form_data):
     try:
+        # Extract general fields
+        name = form_data.get('name', [''])[0].strip()
+        email = form_data.get('email', [''])[0].strip()
+        company = form_data.get('company', [''])[0].strip() or 'Not specified'
+        phone = form_data.get('phone', [''])[0].strip()
+        country = form_data.get('country', [''])[0].strip()
+        service = form_data.get('service', [''])[0].strip()
+        message = form_data.get('message', [''])[0].strip()
+        form_type = form_data.get('form_type', ['Website Inquiry'])[0].strip()
+
+        # Extract 30-day trial specific fields
+        practice_type = form_data.get('practice_type', [''])[0].strip()
+        call_time = form_data.get('call_time', [''])[0].strip()
+        
+        trial_needs = []
+        if form_data.get('need_bookkeeping'):    trial_needs.append('Bookkeeping')
+        if form_data.get('need_ap_ar'):          trial_needs.append('AP / AR')
+        if form_data.get('need_reconciliation'): trial_needs.append('Reconciliation')
+        if form_data.get('need_controller'):     trial_needs.append('Controller support')
+
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = f"[Triistic Website] New Inquiry from {name}"
+        msg['Subject'] = f"[Triistic Website] {form_type} from {name}"
         msg['From'] = f"{FROM_NAME} <{SMTP_USER}>"
         msg['To'] = TO_EMAIL
         msg['Reply-To'] = f"{name} <{email}>"
+
+        # Build dynamic table rows based on form type and provided fields
+        rows_html = f"""
+            <tr><th>Full Name</th><td><strong>{name}</strong></td></tr>
+            <tr><th>Work Email</th><td><a href="mailto:{email}">{email}</a></td></tr>
+            <tr><th>Company or Firm</th><td>{company}</td></tr>
+        """
+
+        if country and country != 'Not specified':
+            rows_html += f"<tr><th>Country</th><td>{country}</td></tr>\n"
+
+        if phone and phone != 'Not provided':
+            rows_html += f"<tr><th>Phone Number</th><td>{phone}</td></tr>\n"
+
+        # 30-Day Free Trial Fields
+        if practice_type:
+            rows_html += f"<tr><th>What Best Describes You</th><td><strong>{practice_type}</strong></td></tr>\n"
+
+        if trial_needs:
+            rows_html += f"<tr><th>Services Needed</th><td>{', '.join(trial_needs)}</td></tr>\n"
+
+        if call_time:
+            rows_html += f"<tr><th>Scoping Call Time</th><td>{call_time}</td></tr>\n"
+
+        # General Contact Form Fields
+        if service:
+            rows_html += f"<tr><th>Service Needed</th><td>{service}</td></tr>\n"
+
+        message_html = ""
+        if message:
+            message_html = f"""
+            <h4 style="margin: 20px 0 8px; color: #334155; font-size: 14px; text-transform: uppercase;">Message / Details:</h4>
+            <div class="message-box">{message}</div>
+            """
 
         html_content = f"""<!DOCTYPE html>
 <html>
@@ -42,9 +97,10 @@ def send_real_email(name, email, company, phone, country, service, message, form
     .content {{ padding: 24px; }}
     table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
     th, td {{ padding: 12px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 14px; }}
-    th {{ width: 35%; color: #64748b; background: #f8fafc; }}
+    th {{ width: 38%; color: #64748b; background: #f8fafc; font-weight: 600; }}
     td {{ color: #0f172a; }}
     .message-box {{ background: #f8fafc; border-left: 4px solid #f59e0b; padding: 14px; border-radius: 4px; font-size: 14px; white-space: pre-line; }}
+    .footer {{ background: #f8fafc; padding: 14px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }}
 </style>
 </head>
 <body>
@@ -54,15 +110,12 @@ def send_real_email(name, email, company, phone, country, service, message, form
     </div>
     <div class="content">
         <table>
-            <tr><th>Full Name</th><td><strong>{name}</strong></td></tr>
-            <tr><th>Email Address</th><td><a href="mailto:{email}">{email}</a></td></tr>
-            <tr><th>Company</th><td>{company}</td></tr>
-            <tr><th>Phone</th><td>{phone}</td></tr>
-            <tr><th>Country</th><td>{country}</td></tr>
-            <tr><th>Service</th><td>{service}</td></tr>
+            {rows_html}
         </table>
-        <h4>Message:</h4>
-        <div class="message-box">{message}</div>
+        {message_html}
+    </div>
+    <div class="footer">
+        Sent via Zoho Mail SMTP to {TO_EMAIL}
     </div>
 </div>
 </body>
@@ -90,18 +143,12 @@ class TriisticRequestHandler(http.server.SimpleHTTPRequestHandler):
             post_body = self.rfile.read(content_length).decode('utf-8')
             form_data = urllib.parse.parse_qs(post_body)
             
-            # Extract fields
-            name = form_data.get('name', [''])[0]
-            email = form_data.get('email', [''])[0]
-            company = form_data.get('company', [''])[0] or 'Not specified'
-            phone = form_data.get('phone', [''])[0] or 'Not provided'
-            country = form_data.get('country', [''])[0] or 'Not specified'
-            service = form_data.get('service', [''])[0]
-            message = form_data.get('message', [''])[0]
-            form_type = form_data.get('form_type', ['Website Inquiry'])[0]
+            name = form_data.get('name', [''])[0].strip()
+            email = form_data.get('email', [''])[0].strip()
+            form_type = form_data.get('form_type', ['Website Inquiry'])[0].strip()
             
-            print(f"\n[DEV SERVER] Form submitted by: {name} ({email})")
-            send_real_email(name, email, company, phone, country, service, message, form_type)
+            print(f"\n[DEV SERVER] Form submitted: {form_type} by {name} ({email})")
+            send_real_email(form_data)
 
             # Redirect to thank-you.html
             self.send_response(303)
