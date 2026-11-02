@@ -13,9 +13,8 @@
 // ============================================================================
 // 1. ZOHO SMTP CONFIGURATION
 // ============================================================================
-// If your Zoho account was created in India (.in), use: 'smtppro.zoho.in'
-// If your Zoho account was created in the US / Global (.com), use: 'smtppro.zoho.com'
-define('SMTP_HOST', 'smtppro.zoho.com'); 
+// Zoho Mail India SMTP Host:
+define('SMTP_HOST', 'smtp.zoho.in'); 
 
 // Port: 465 (SSL) is recommended for Zoho. Or 587 (TLS).
 define('SMTP_PORT', 465); 
