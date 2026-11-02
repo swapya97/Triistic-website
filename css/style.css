@@ -1582,19 +1582,23 @@ iframe {
 }
 
 
-/* ================= ABOUT SECTION MOBILE CENTER FIX ================= */
-
+/* ================= CONTENT SECTIONS MOBILE ALIGNMENT ================= */
 @media (max-width: 768px) {
-
-    /* Center text content */
+    /* Keep headings, kickers, paragraphs and action buttons cleanly left-aligned on mobile */
+    .container-fluid .col-lg-6 h1,
+    .container-fluid .col-lg-6 h2,
+    .container-fluid .col-lg-6 h3,
     .container-fluid .col-lg-6 h4,
-    .container-fluid .col-lg-6 p {
-        text-align: center;
+    .container-fluid .col-lg-6 h5,
+    .container-fluid .col-lg-6 h6,
+    .container-fluid .col-lg-6 p,
+    .container-fluid .col-lg-6 .section-kicker {
+        text-align: left !important;
     }
 
-    /* Center CTA button */
+    /* Left-align action buttons with the text */
     .container-fluid .col-lg-6 .d-flex {
-        justify-content: center !important;
+        justify-content: flex-start !important;
     }
 }
 
