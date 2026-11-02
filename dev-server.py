@@ -1,16 +1,12 @@
 """
-Triistic Local Development Server
-Supports static file serving AND handles POST requests to /send-mail.php,
-redirecting to thank-you.html.
+Triistic Local Development Server (Multi-threaded)
+Handles multiple concurrent browser connections and tabs (including Incognito).
+Supports static file serving AND handles POST requests to /send-mail.php.
 """
 
 import http.server
-import socketserver
 import urllib.parse
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 PORT = 8000
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -46,19 +42,19 @@ class TriisticRequestHandler(http.server.SimpleHTTPRequestHandler):
             # Redirect to thank-you.html
             self.send_response(303)
             self.send_header('Location', '/thank-you.html')
+            self.send_header('Content-Length', '0')
             self.end_headers()
             return
             
-        # Fallback for other POST requests
         self.send_error(404, "Endpoint not found")
 
 if __name__ == '__main__':
-    # Allow port reuse
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), TriisticRequestHandler) as httpd:
-        print(f"[DEV SERVER] Serving Triistic website at http://localhost:{PORT}")
-        print(f"[DEV SERVER] Form POST handler active for /send-mail.php -> /thank-you.html")
-        try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            print("\n[DEV SERVER] Server stopped.")
+    # Use ThreadingHTTPServer so connections from multiple tabs/incognito are handled concurrently
+    server_address = ('', PORT)
+    httpd = http.server.ThreadingHTTPServer(server_address, TriisticRequestHandler)
+    httpd.daemon_threads = True
+    print(f"[DEV SERVER] Multi-threaded server running at http://localhost:{PORT}")
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[DEV SERVER] Server stopped.")
