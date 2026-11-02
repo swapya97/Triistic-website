@@ -176,12 +176,9 @@
                         <p class="trial-note mb-3">Three quick steps. We reply within one business day.</p>
                         <ol class="trial-progress" aria-hidden="true"><li></li><li></li><li></li></ol>
 
-                        <form id="trialForm" class="trial-form" action="https://api.web3forms.com/submit" method="POST">
-                            <!-- CLIENT-ACTION: same Web3Forms access key as the enquiry form. -->
-                            <input type="hidden" name="access_key" value="YOUR-WEB3FORMS-ACCESS-KEY">
+                        <form id="trialForm" class="trial-form" action="send-mail.php" method="POST">
+                            <input type="hidden" name="form_type" value="30-Day Free Trial Request">
                             <input type="hidden" name="subject" value="Free trial request from triistic.com">
-                            <input type="hidden" name="from_name" value="Triistic Global website">
-                            <input type="hidden" name="redirect" value="https://triistic.com/thank-you.html">
                             <input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
 
                             <fieldset class="trial-step">

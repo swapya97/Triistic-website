@@ -615,12 +615,9 @@
                         <p class="mb-4">We reply within one business day to set up a short discovery call.</p>
 
                         <!-- SHARED:FORM START -->
-                        <form action="https://api.web3forms.com/submit" method="POST" class="enquiry-form">
-                            <!-- CLIENT-ACTION: create a free access key at web3forms.com for enquiry@triistic.com and paste it in the value below. -->
-                            <input type="hidden" name="access_key" value="YOUR-WEB3FORMS-ACCESS-KEY">
+                        <form action="send-mail.php" method="POST" class="enquiry-form">
+                            <input type="hidden" name="form_type" value="Home Page Inquiry">
                             <input type="hidden" name="subject" value="New inquiry from triistic.com">
-                            <input type="hidden" name="from_name" value="Triistic Global website">
-                            <input type="hidden" name="redirect" value="https://triistic.com/thank-you.html">
                             <input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
 
                             <div class="row g-3">
