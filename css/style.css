@@ -3938,7 +3938,7 @@ body {
 .feature-strip li {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--tg-navy);
     font-weight: 600;
 }
@@ -3946,6 +3946,29 @@ body {
 .feature-strip li i {
     color: var(--tg-gold);
     font-size: 20px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 991.98px) {
+    .feature-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 24px;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .feature-strip li {
+        align-items: flex-start;
+        text-align: left;
+        width: 100%;
+    }
+
+    .feature-strip li i {
+        margin-top: 2px;
+    }
 }
 
 .page-intro-actions {
